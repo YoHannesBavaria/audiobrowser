@@ -33,7 +33,15 @@ app.post('/fetch', async (req, res) => {
 
   try {
     // Launch Puppeteer browser
-    const browser = await puppeteer.launch();
+    const chromium = require('chrome-aws-lambda');
+    const puppeteer = require('puppeteer-core');
+    
+    const browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+    });
+    
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 
@@ -86,7 +94,7 @@ app.post('/fetch', async (req, res) => {
       <a href="/">Back to Home</a>
     `);
   } */
-    res.send(`
+  res.send(`
       <div style="max-width: 100%; padding: 20px;">
         <h1>Scraped Content from ${url}</h1>
         <h2>Summary of Text Content with AI:</h2>
@@ -101,8 +109,9 @@ app.post('/fetch', async (req, res) => {
         <pre style="white-space: pre-wrap; word-wrap: break-word; max-width: 100%;">${pageContent.textWithLinks}</pre>
         <a href="/">Back to Home</a>
       </div>
-    `);
-    } catch (error) {
+  `);
+
+  } catch (error) {
     console.error(error);
     res.send('An error occurred while trying to scrape the URL or generate a summary.');
   }
