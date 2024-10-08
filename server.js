@@ -89,7 +89,7 @@ app.post('/fetch', async (req, res) => {
     res.send(`
       <div style="max-width: 100%; padding: 20px;">
         <h1>Scraped Content from ${url}</h1>
-        <h2>Summary of Text Content:</h2>
+        <h2>Summary of Text Content with AI:</h2>
         <pre style="white-space: pre-wrap; word-wrap: break-word; max-width: 100%;">${summary}</pre>
         <h2>Text Content:</h2>
         <pre style="white-space: pre-wrap; word-wrap: break-word; max-width: 100%;">${pageContent.text}</pre>
