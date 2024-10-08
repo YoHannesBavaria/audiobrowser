@@ -7,5 +7,11 @@
     "express": "^4.21.0",
     "langchain": "^0.3.2",
     "puppeteer": "^23.5.1"
+  },
+  "name": "audiobrowser",
+  "version": "1.0.0",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js"
   }
 }
