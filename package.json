@@ -6,8 +6,9 @@
     "body-parser": "^1.20.3",
     "express": "^4.21.0",
     "langchain": "^0.3.2",
-    "puppeteer-core": "^19.6.0",
-    "chrome-aws-lambda": "^10.1.0"
+    "puppeteer": "^19.6.0",           
+    "puppeteer-core": "^19.6.0",      
+    "chrome-aws-lambda": "^10.1.0"    
   },
   "name": "audiobrowser",
   "version": "1.0.0",

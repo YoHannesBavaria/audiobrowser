@@ -33,15 +33,25 @@ app.post('/fetch', async (req, res) => {
 
   try {
     // Launch Puppeteer browser
-    const chromium = require('chrome-aws-lambda');
-    const puppeteer = require('puppeteer-core');
-    
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
-    });
-    
+    let browser;
+
+if (process.env.NODE_ENV === 'production') {
+  const chromium = require('chrome-aws-lambda');
+  const puppeteer = require('puppeteer-core');
+
+  browser = await puppeteer.launch({
+    args: chromium.args,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless,
+  });
+} else {
+  const puppeteer = require('puppeteer');
+
+  browser = await puppeteer.launch({
+    headless: true, // Enable headless mode locally
+  });
+}
+
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 
@@ -59,11 +69,11 @@ app.post('/fetch', async (req, res) => {
     try {
       // Use ChatGroq to generate a summary of the scraped text
       const model = new ChatGroq({
-        apiKey: "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",
+        apiKey: "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",
       });
 
       const promptTemplate = ChatPromptTemplate.fromTemplate(
-        "You are a summarization assistant. Please summarize the following text in a clear, concise manner, with a minimum of 1000 words and a maximum of 2000 words: {input}"
+        "You are a summarization assistant. Please summarize the following text in a clear, concise manner, with a minimum of 400 words and a maximum of 1000 words: {input}"
       );
       
       const chain = promptTemplate.pipe(model);

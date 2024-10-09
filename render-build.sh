@@ -1,8 +1,28 @@
 #!/usr/bin/env bash
 # Install necessary packages for Puppeteer to work on Render
-apt-get update && apt-get install -y wget gnupg \
-  --no-install-recommends && \
-  wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-  sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
-  apt-get update && apt-get install -y google-chrome-stable --no-install-recommends && \
-  apt-get purge --auto-remove -y && rm -rf /var/lib/apt/lists/*
+
+# Update package lists and install dependencies
+apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    ca-certificates \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libcups2 \
+    libdbus-1-3 \
+    libdrm2 \
+    libgbm1 \
+    libnspr4 \
+    libnss3 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    xdg-utils \
+    libu2f-udev \
+    google-chrome-stable --no-install-recommends
+
+# Clean up apt lists to keep the image small
+apt-get clean && rm -rf /var/lib/apt/lists/*
