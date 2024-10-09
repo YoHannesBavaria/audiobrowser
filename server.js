@@ -37,11 +37,10 @@ app.post('/fetch', async (req, res) => {
 
     if (process.env.NODE_ENV === 'production') {
       const chromium = require('chrome-aws-lambda');
-      puppeteer = require('puppeteer-core');
-
-      browser = await puppeteer.launch({
+    
+      browser = await chromium.puppeteer.launch({
         args: chromium.args,
-        executablePath: await chromium.executablePath || '/usr/bin/google-chrome', // Fallback if executablePath is not found
+        executablePath: await chromium.executablePath,
         headless: chromium.headless,
       });
     } else {
