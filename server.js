@@ -43,7 +43,8 @@ app.post('/fetch', async (req, res) => {
         executablePath: await chromium.executablePath,
         headless: chromium.headless,
       });
-    } else {
+    }
+     else {
       puppeteer = require('puppeteer');
 
       browser = await puppeteer.launch({
