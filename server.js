@@ -34,22 +34,23 @@ app.post('/fetch', async (req, res) => {
     // Conditional require statements based on environment
     let browser;
 
-if (process.env.NODE_ENV === 'production') {
-  const chromium = require('chrome-aws-lambda');
-
-  browser = await chromium.puppeteer.launch({
-    args: chromium.args,
-    executablePath: await chromium.executablePath,
-    headless: chromium.headless,
-  });
-} else {
-  const puppeteer = require('puppeteer');
-
-  browser = await puppeteer.launch({
-    headless: true, // Enable headless mode locally
-  });
-}
-
+    if (process.env.NODE_ENV === 'production') {
+      const chromium = require('chrome-aws-lambda');
+      const puppeteer = require('puppeteer-core');
+    
+      browser = await puppeteer.launch({
+        args: chromium.args,
+        executablePath: await chromium.executablePath,
+        headless: chromium.headless,
+      });
+    } else {
+      const puppeteer = require('puppeteer');
+    
+      browser = await puppeteer.launch({
+        headless: true, // Enable headless mode locally
+      });
+    }
+    
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 
