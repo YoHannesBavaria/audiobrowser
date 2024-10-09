@@ -1,5 +1,4 @@
 const express = require('express');
-const puppeteer = require('puppeteer');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const { ChatGroq } = require('@langchain/groq');
@@ -32,26 +31,27 @@ app.post('/fetch', async (req, res) => {
   }
 
   try {
-    // Launch Puppeteer browser
+    // Conditional require statements based on environment
+    let puppeteer;
     let browser;
 
     if (process.env.NODE_ENV === 'production') {
       const chromium = require('chrome-aws-lambda');
-      const puppeteer = require('puppeteer-core');
-    
+      puppeteer = require('puppeteer-core');
+
       browser = await puppeteer.launch({
         args: chromium.args,
-        executablePath: await chromium.executablePath || '/usr/bin/google-chrome', // Use Render-installed Chrome if no path found
+        executablePath: await chromium.executablePath || '/usr/bin/google-chrome', // Fallback if executablePath is not found
         headless: chromium.headless,
       });
     } else {
-      const puppeteer = require('puppeteer');
-    
+      puppeteer = require('puppeteer');
+
       browser = await puppeteer.launch({
         headless: true, // Enable headless mode locally
       });
     }
-    
+
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 
@@ -73,11 +73,12 @@ app.post('/fetch', async (req, res) => {
       });
 
       const promptTemplate = ChatPromptTemplate.fromTemplate(
-        "You are a summarization assistant. Please summarize the following text in a clear, concise manner, with a minimum of 400 words and a maximum of 1000 words: {input}"
+        "You are an assistant specialized in text summarization. Summarize the following text, focusing on the main points and key details in 200-300 words: {input}"
       );
-      
+
+      const truncatedText = pageContent.text.slice(0, 3000); // Truncate to 3000 characters for better handling
       const chain = promptTemplate.pipe(model);
-      const data = await chain.invoke({ input: pageContent.text });
+      const data = await chain.invoke({ input: truncatedText });
 
       if (data && data.content) {
         summary = data.content;
@@ -91,20 +92,7 @@ app.post('/fetch', async (req, res) => {
     }
 
     // Send the extracted content as response
-    /*res.send(`
-      <h1>Scraped Content from ${url}</h1>
-      <h2>Summary of Text Content:</h2>
-      <pre>${summary}</pre>
-      <h2>Text Content:</h2>
-      <pre>${pageContent.text}</pre>
-      <h2>Links:</h2>
-      <ul>
-        ${pageContent.links.map(link => `<li><a href="${link}">${link}</a></li>`).join('')}
-      </ul>
-      <a href="/">Back to Home</a>
-    `);
-  } */
-  res.send(`
+    res.send(`
       <div style="max-width: 100%; padding: 20px;">
         <h1>Scraped Content from ${url}</h1>
         <h2>Summary of Text Content with AI:</h2>
@@ -119,7 +107,7 @@ app.post('/fetch', async (req, res) => {
         <pre style="white-space: pre-wrap; word-wrap: break-word; max-width: 100%;">${pageContent.textWithLinks}</pre>
         <a href="/">Back to Home</a>
       </div>
-  `);
+    `);
 
   } catch (error) {
     console.error(error);
@@ -151,3 +139,4 @@ app.listen(port, () => {
   </body>
   </html>
 */
+
