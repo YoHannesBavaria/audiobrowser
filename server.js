@@ -32,25 +32,23 @@ app.post('/fetch', async (req, res) => {
 
   try {
     // Conditional require statements based on environment
-    let puppeteer;
     let browser;
 
-    if (process.env.NODE_ENV === 'production') {
-      const chromium = require('chrome-aws-lambda');
-    
-      browser = await chromium.puppeteer.launch({
-        args: chromium.args,
-        executablePath: await chromium.executablePath,
-        headless: chromium.headless,
-      });
-    }
-     else {
-      puppeteer = require('puppeteer');
+if (process.env.NODE_ENV === 'production') {
+  const chromium = require('chrome-aws-lambda');
 
-      browser = await puppeteer.launch({
-        headless: true, // Enable headless mode locally
-      });
-    }
+  browser = await chromium.puppeteer.launch({
+    args: chromium.args,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless,
+  });
+} else {
+  const puppeteer = require('puppeteer');
+
+  browser = await puppeteer.launch({
+    headless: true, // Enable headless mode locally
+  });
+}
 
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'domcontentloaded' });
@@ -111,7 +109,7 @@ app.post('/fetch', async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.send('An error occurred while trying to scrape the URL or generate a summary.');
+    res.send(error.message);
   }
 });
 
