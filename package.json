@@ -11,7 +11,8 @@
 },
 
   "scripts": {
-    "build": "./render-build.sh && npm install",
+    "build2": "./render-build.sh && npm install",
+    "build": "npm install",
     "start": "node server.js"
   }
 }
