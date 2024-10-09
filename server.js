@@ -35,23 +35,23 @@ app.post('/fetch', async (req, res) => {
     // Launch Puppeteer browser
     let browser;
 
-if (process.env.NODE_ENV === 'production') {
-  const chromium = require('chrome-aws-lambda');
-  const puppeteer = require('puppeteer-core');
-
-  browser = await puppeteer.launch({
-    args: chromium.args,
-    executablePath: await chromium.executablePath,
-    headless: chromium.headless,
-  });
-} else {
-  const puppeteer = require('puppeteer');
-
-  browser = await puppeteer.launch({
-    headless: true, // Enable headless mode locally
-  });
-}
-
+    if (process.env.NODE_ENV === 'production') {
+      const chromium = require('chrome-aws-lambda');
+      const puppeteer = require('puppeteer-core');
+    
+      browser = await puppeteer.launch({
+        args: chromium.args,
+        executablePath: await chromium.executablePath || '/usr/bin/google-chrome', // Use Render-installed Chrome if no path found
+        headless: chromium.headless,
+      });
+    } else {
+      const puppeteer = require('puppeteer');
+    
+      browser = await puppeteer.launch({
+        headless: true, // Enable headless mode locally
+      });
+    }
+    
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 

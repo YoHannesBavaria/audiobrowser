@@ -1,4 +1,7 @@
 {
+  "name": "audiobrowser",
+  "version": "1.0.0",
+  "main": "server.js",
   "dependencies": {
     "@langchain/core": "^0.3.7",
     "@langchain/groq": "^0.1.2",
@@ -6,13 +9,9 @@
     "body-parser": "^1.20.3",
     "express": "^4.21.0",
     "langchain": "^0.3.2",
-    "puppeteer": "^19.6.0",           
-    "puppeteer-core": "^19.6.0",      
-    "chrome-aws-lambda": "^10.1.0"    
+    "puppeteer-core": "^19.6.0",        
+    "chrome-aws-lambda": "^10.1.0"      
   },
-  "name": "audiobrowser",
-  "version": "1.0.0",
-  "main": "index.html",
   "scripts": {
     "build": "./render-build.sh && npm install",
     "start": "node server.js"
