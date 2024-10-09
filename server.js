@@ -32,24 +32,38 @@ app.post('/fetch', async (req, res) => {
 
   try {
     // Conditional require statements based on environment
-    let browser;
+const fs = require('fs');
+const path = require('path');
 
-    if (process.env.NODE_ENV === 'production') {
-      const chromium = require('chrome-aws-lambda');
-      const puppeteer = require('puppeteer-core');
-    
-      browser = await puppeteer.launch({
-        args: chromium.args,
-        executablePath: await chromium.executablePath,
-        headless: chromium.headless,
-      });
-    } else {
-      const puppeteer = require('puppeteer');
-    
-      browser = await puppeteer.launch({
-        headless: true, // Enable headless mode locally
-      });
-    }
+let browser;
+
+if (process.env.NODE_ENV === 'production') {
+  const chromium = require('chrome-aws-lambda');
+  const puppeteer = require('puppeteer-core');
+
+  // Check if the Chromium executable is available, download if needed
+  const executablePath = await chromium.executablePath;
+
+  if (!executablePath || !fs.existsSync(executablePath)) {
+    // If Chromium doesn't exist, download it
+    console.log("Chromium not found. Downloading appropriate version.");
+    await puppeteer.launch({ headless: true });  // This will download the correct version
+  }
+
+  // Launch Puppeteer using the chrome-aws-lambda configurations
+  browser = await puppeteer.launch({
+    args: chromium.args,
+    executablePath: executablePath || '/usr/bin/chromium-browser',  // Fallback path
+    headless: chromium.headless,
+  });
+} else {
+  const puppeteer = require('puppeteer');
+
+  // Use Puppeteer for local development with Chromium installed by Puppeteer
+  browser = await puppeteer.launch({
+    headless: true,
+  });
+}
     
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'domcontentloaded' });
