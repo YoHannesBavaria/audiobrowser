@@ -14,5 +14,5 @@
   },
   "devDependencies": {
     "puppeteer": "^10.4.0"             
-  },
+  }
 }
