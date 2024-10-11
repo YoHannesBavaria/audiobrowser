@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 # exit on error
+
+npm install
+
 set -o errexit
 
 STORAGE_DIR=/opt/render/project/.render
@@ -20,4 +23,4 @@ fi
 # export PATH="${PATH}:/opt/render/project/.render/chrome/opt/google/chrome"
 
 # add your own build commands...
-npm install
+
