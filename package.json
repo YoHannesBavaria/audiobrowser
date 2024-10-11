@@ -12,6 +12,9 @@
     "chrome-aws-lambda": "^10.1.0",    
     "puppeteer-core": "^10.4.0"        
   },
+  "scripts": {
+    "build": "render-build",
+  },
   "devDependencies": {
     "puppeteer": "^10.4.0"             
   }
