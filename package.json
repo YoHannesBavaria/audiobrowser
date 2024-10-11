@@ -16,6 +16,6 @@
     "puppeteer": "^10.4.0"             
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "export PATH="${PATH}:/opt/render/project/.render/chrome/opt/google/chrome" node server.js"
   }
 }
